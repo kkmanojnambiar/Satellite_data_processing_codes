@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>wrf_postprocessing_codes.main API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>wrf_postprocessing_codes.main</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import os
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+from src import settings
+from src.dataframe_process import add_timeinseconds_col
+from src.qqplot import qqplot
+from src.utils import filter_prec, rmse, stdev, sum_chunk, time_convert
+
+
+def main():
+    met_stn_data_path = os.path.join(
+        settings.data_path, &#34;AB_RMF_bonsai_meteorological.txt&#34;
+    )
+
+    df = pd.read_csv(
+        met_stn_data_path,
+        sep=&#34; |\t&#34;,
+        header=None,
+        usecols=[0, 1, 2],
+        names=[&#34;Date&#34;, &#34;Time&#34;, &#34;prec&#34;],
+        engine=&#34;python&#34;,
+    )
+
+    df, full_list = add_timeinseconds_col(df)
+    time_list_mswep = full_list[::12]
+    Prec2 = df.prec
+
+    Prec_station_3H = Prec2[:210324].values.reshape(-1, 12).sum(1)
+    Prec_station_3H_16_20 = Prec_station_3H[5839:]  # precipitation from 2016 jan 01
+
+    cmorph_timeseries_WISKI = os.path.join(
+        settings.data_path, &#34;cmorph_timeseries_WISKI.txt&#34;
+    )
+    cmorph_data = np.loadtxt(cmorph_timeseries_WISKI)
+    cmorph_prec_B1 = cmorph_data[:, 5]
+    cmorph_prec_B1_3H = sum_chunk(cmorph_prec_B1, 3)
+    cmorph_prec_B1_3H = cmorph_prec_B1_3H[:17527]
+    cmorph_prec_B2 = cmorph_data[:, 8]
+    cmorph_prec_B2_3H = sum_chunk(cmorph_prec_B2, 3)
+    cmorph_prec_B2_3H = cmorph_prec_B2_3H[:17527]
+    cmorph_time_list = cmorph_data[:, 3]
+
+    imerg_timeseries_WISKI = os.path.join(
+        settings.data_path, &#34;imerg_timeseries_WISKI.txt&#34;
+    )
+    imerg_data = np.loadtxt(imerg_timeseries_WISKI)
+    time2 = imerg_data[:, 0]
+    imerg_prec_B1 = imerg_data[:, 5]
+    imerg_prec_B1_3H = sum_chunk(
+        imerg_prec_B1, 6
+    )  # accumulated every 3 hours (6 times 30min)
+    imerg_prec_B1_3H = imerg_prec_B1_3H[:17527]
+    imerg_prec_B2 = imerg_data[:, 8]
+    imerg_prec_B2_3H = sum_chunk(imerg_prec_B2, 6)  # accumulated every 3 hours
+    imerg_prec_B2_3H = imerg_prec_B2_3H[:17527]
+    imerg_time = imerg_data[:, 3]
+
+    gsmap_timeseries_WISKI = os.path.join(
+        settings.data_path, &#34;gsmap_timeseries_WISKI.txt&#34;
+    )
+    gsmap_data = np.loadtxt(gsmap_timeseries_WISKI)
+    gsmap_prec_B1 = gsmap_data[:, 5]
+    gsmap_prec_B2 = gsmap_data[:, 8]
+    gsmap_year = gsmap_data[:, 0]
+    gsmap_month = gsmap_data[:, 1]
+    gsmap_day = gsmap_data[:, 2]
+    gsmap_hour = gsmap_data[:, 3]
+    gsmap_time_list = np.zeros(len(gsmap_year))
+    index = 0
+    for index in range(len(gsmap_year)):
+        gsmap_time_list[index] = time_convert(
+            int(gsmap_year[index]),
+            int(gsmap_month[index]),
+            int(gsmap_day[index]),
+            int(gsmap_hour[index]),
+            0,
+        )
+    gsmap_prec_B1_2016_2020 = gsmap_prec_B1[:35064]
+    gsmap_prec_B1_16_20_3H = sum_chunk(gsmap_prec_B1_2016_2020, 3)
+    gsmap_prec_B2_2016_2020 = gsmap_prec_B2[:35064]
+    gsmap_prec_B2_16_20_3H = sum_chunk(gsmap_prec_B2_2016_2020, 3)
+
+    mswep_timeseries_WISKI = os.path.join(
+        settings.data_path, &#34;mswep_timeseries_WISKI.txt&#34;
+    )
+    mswep_data = np.loadtxt(mswep_timeseries_WISKI)
+    mswep_prec_B1 = mswep_data[:, 5]
+    mswep_prec_B2 = mswep_data[:, 8]
+    mswep_prec_B1 = mswep_prec_B1[:17527]
+    mswep_prec_B2 = mswep_prec_B2[:17527]
+
+    mswep_prec_B1_3H_filter, Prec_station_3H_filter_m1 = filter_prec(
+        mswep_prec_B1, Prec_station_3H, 0.2
+    )
+    rmse_mswep1 = rmse(mswep_prec_B1_3H_filter, Prec_station_3H_filter_m1)
+    corr_mswep1 = np.corrcoef(mswep_prec_B1_3H_filter, Prec_station_3H_filter_m1)
+    std_mswep1 = stdev(mswep_prec_B1_3H_filter)
+    std_Bonsai = stdev(Prec_station_3H_filter_m1)
+
+    mswep_prec_B2_3H_filter, Prec_station_3H_filter_m2 = filter_prec(
+        mswep_prec_B2, Prec_station_3H, 0.2
+    )
+    rmse_mswep2 = rmse(mswep_prec_B2_3H_filter, Prec_station_3H_filter_m2)
+    corr_mswep2 = np.corrcoef(mswep_prec_B2_3H_filter, Prec_station_3H_filter_m2)
+    std_mswep2 = stdev(mswep_prec_B2_3H_filter)
+
+    print(&#34;Bonsai_std=&#34;, std_Bonsai)
+
+    print(&#34;MSWEP1: std, corr,rmse:&#34;, std_mswep1, corr_mswep1[0, 1], rmse_mswep1)
+    print(&#34;MSWEP2: std, corr,rmse:&#34;, std_mswep2, corr_mswep2[0, 1], rmse_mswep2)
+
+    cmorph_prec_B1_3H_filter, Prec_station_3H_filter_c1 = filter_prec(
+        cmorph_prec_B1_3H, Prec_station_3H, 0.2
+    )
+    rmse_cmorph1 = rmse(cmorph_prec_B1_3H_filter, Prec_station_3H_filter_c1)
+    corr_cmorph1 = np.corrcoef(cmorph_prec_B1_3H_filter, Prec_station_3H_filter_c1)
+    std_cmorph1 = stdev(cmorph_prec_B1_3H_filter)
+    cmorph_prec_B2_3H_filter, Prec_station_3H_filter_c2 = filter_prec(
+        cmorph_prec_B2_3H, Prec_station_3H, 0.2
+    )
+    rmse_cmorph2 = rmse(cmorph_prec_B2_3H_filter, Prec_station_3H_filter_c2)
+    corr_cmorph2 = np.corrcoef(cmorph_prec_B2_3H_filter, Prec_station_3H_filter_c2)
+    std_cmorph2 = stdev(cmorph_prec_B2_3H_filter)
+
+    print(&#34;cmorph1: std, corr,rmse:&#34;, std_cmorph1, corr_cmorph1[0, 1], rmse_cmorph1)
+    print(&#34;cmorph2: std, corr,rmse:&#34;, std_cmorph2, corr_cmorph2[0, 1], rmse_cmorph2)
+
+    imerg_prec_B1_3H_filter, Prec_station_3H_filter_i1 = filter_prec(
+        imerg_prec_B1_3H, Prec_station_3H, 0.2
+    )
+    rmse_imerg1 = rmse(imerg_prec_B1_3H_filter, Prec_station_3H_filter_i1)
+    corr_imerg1 = np.corrcoef(imerg_prec_B1_3H_filter, Prec_station_3H_filter_i1)
+    std_imerg1 = stdev(imerg_prec_B1_3H_filter)
+    imerg_prec_B2_3H_filter, Prec_station_3H_filter_i2 = filter_prec(
+        imerg_prec_B2_3H, Prec_station_3H, 0.2
+    )
+    rmse_imerg2 = rmse(imerg_prec_B2_3H_filter, Prec_station_3H_filter_i2)
+    corr_imerg2 = np.corrcoef(imerg_prec_B2_3H_filter, Prec_station_3H_filter_i2)
+    std_imerg2 = stdev(imerg_prec_B2_3H_filter)
+
+    print(&#34;imerg1: std, corr,rmse:&#34;, std_imerg1, corr_imerg1[0, 1], rmse_imerg1)
+    print(&#34;imerg2: std, corr,rmse:&#34;, std_imerg2, corr_imerg2[0, 1], rmse_imerg2)
+
+    gsmap_prec_B1_3H_filter, Prec_station_3H_filter_gsmap_g1 = filter_prec(
+        gsmap_prec_B1_16_20_3H, Prec_station_3H_16_20, 0.2
+    )
+    rmse_gsmap1 = rmse(gsmap_prec_B1_3H_filter, Prec_station_3H_filter_gsmap_g1)
+    corr_gsmap1 = np.corrcoef(gsmap_prec_B1_3H_filter, Prec_station_3H_filter_gsmap_g1)
+    std_gsmap1 = stdev(gsmap_prec_B1_3H_filter)
+    gsmap_prec_B2_3H_filter, Prec_station_3H_filter_gsmap_g2 = filter_prec(
+        gsmap_prec_B2_16_20_3H, Prec_station_3H_16_20, 0.2
+    )
+    rmse_gsmap2 = rmse(gsmap_prec_B2_3H_filter, Prec_station_3H_filter_gsmap_g2)
+    corr_gsmap2 = np.corrcoef(gsmap_prec_B2_3H_filter, Prec_station_3H_filter_gsmap_g2)
+    std_gsmap2 = stdev(gsmap_prec_B2_3H_filter)
+
+    print(&#34;gsmap1: std, corr,rmse:&#34;, std_gsmap1, corr_gsmap1[0, 1], rmse_gsmap1)
+    print(&#34;gsmap2: std, corr,rmse:&#34;, std_gsmap2, corr_gsmap2[0, 1], rmse_gsmap2)
+
+    filter = 0.2
+    Prec_station_3H_filter = [i for i in Prec_station_3H if i &gt;= filter]
+
+    fig = plt.figure(figsize=(10, 10))
+    ax = plt.gca()
+    qqplot(
+        Prec_station_3H_filter,
+        cmorph_prec_B1_3H_filter,
+        c=&#34;r&#34;,
+        alpha=0.5,
+        marker=&#34;o&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;CMORPH Grid1&#34;,
+        ms=29,
+    )
+    qqplot(
+        Prec_station_3H_filter,
+        imerg_prec_B1_3H_filter,
+        c=&#34;b&#34;,
+        alpha=0.5,
+        marker=&#34;o&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;IMERG Grid1&#34;,
+        ms=29,
+    )
+    qqplot(
+        Prec_station_3H_filter,
+        gsmap_prec_B1_3H_filter,
+        c=&#34;g&#34;,
+        marker=&#34;o&#34;,
+        alpha=0.5,
+        linestyle=&#34;None&#34;,
+        label=&#34;GSMaP Grid1&#34;,
+        ms=29,
+    )
+    qqplot(
+        Prec_station_3H_filter,
+        mswep_prec_B1_3H_filter,
+        c=&#34;m&#34;,
+        alpha=0.5,
+        marker=&#34;o&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;MSWEP Grid1&#34;,
+        ms=29,
+    )
+    plt.plot(imerg_prec_B1_3H_filter, imerg_prec_B1_3H_filter, c=&#34;k&#34;)
+    qqplot(
+        Prec_station_3H_filter,
+        cmorph_prec_B2_3H_filter,
+        c=&#34;r&#34;,
+        alpha=0.5,
+        marker=&#34;^&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;CMORPH Grid2&#34;,
+        ms=29,
+    )
+    qqplot(
+        Prec_station_3H_filter,
+        imerg_prec_B2_3H_filter,
+        c=&#34;b&#34;,
+        alpha=0.5,
+        marker=&#34;^&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;IMERG Grid2&#34;,
+        ms=29,
+    )
+    qqplot(
+        Prec_station_3H_filter,
+        gsmap_prec_B2_3H_filter,
+        c=&#34;g&#34;,
+        alpha=0.5,
+        marker=&#34;^&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;GSMaP Grid2&#34;,
+        ms=29,
+    )
+    qqplot(
+        Prec_station_3H_filter,
+        mswep_prec_B2_3H_filter,
+        c=&#34;m&#34;,
+        alpha=0.5,
+        marker=&#34;^&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;MSWEP Grid2&#34;,
+        ms=29,
+    )
+    plt.xlabel(&#34;Station quantile prec. (mm/3h)&#34;, fontsize=40)
+    plt.ylabel(&#34;Satellite quantile prec. (mm/3h)&#34;, fontsize=40)
+    plt.suptitle(&#34;Fortress Bonsai&#34;, fontsize=40)
+    ax.tick_params(axis=&#34;x&#34;)
+    ax.tick_params(axis=&#34;y&#34;)
+    plt.xticks(fontsize=40)
+    plt.yticks(fontsize=40)
+    plt.legend(loc=&#34;lower right&#34;, frameon=False, prop={&#34;size&#34;: 20})
+    plt.tight_layout()
+    fig.tight_layout(rect=[0, 0.03, 1, 0.95])
+    fig.savefig(
+        os.path.join(
+            settings.output_path,
+            &#34;QQplot_Bonsai_satellites_grid1_grid2_3H_filterlog.pdf&#34;,
+        )
+    )
+    fig.savefig(
+        os.path.join(
+            settings.output_path,
+            &#34;QQplot_Bonsai_satellites_grid1_grid2_3H_filterlog.png&#34;,
+        )
+    )
+
+
+if __name__ == &#34;__main__&#34;:
+    main()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="wrf_postprocessing_codes.main.main"><code class="name flex">
+<span>def <span class="ident">main</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def main():
+    met_stn_data_path = os.path.join(
+        settings.data_path, &#34;AB_RMF_bonsai_meteorological.txt&#34;
+    )
+
+    df = pd.read_csv(
+        met_stn_data_path,
+        sep=&#34; |\t&#34;,
+        header=None,
+        usecols=[0, 1, 2],
+        names=[&#34;Date&#34;, &#34;Time&#34;, &#34;prec&#34;],
+        engine=&#34;python&#34;,
+    )
+
+    df, full_list = add_timeinseconds_col(df)
+    time_list_mswep = full_list[::12]
+    Prec2 = df.prec
+
+    Prec_station_3H = Prec2[:210324].values.reshape(-1, 12).sum(1)
+    Prec_station_3H_16_20 = Prec_station_3H[5839:]  # precipitation from 2016 jan 01
+
+    cmorph_timeseries_WISKI = os.path.join(
+        settings.data_path, &#34;cmorph_timeseries_WISKI.txt&#34;
+    )
+    cmorph_data = np.loadtxt(cmorph_timeseries_WISKI)
+    cmorph_prec_B1 = cmorph_data[:, 5]
+    cmorph_prec_B1_3H = sum_chunk(cmorph_prec_B1, 3)
+    cmorph_prec_B1_3H = cmorph_prec_B1_3H[:17527]
+    cmorph_prec_B2 = cmorph_data[:, 8]
+    cmorph_prec_B2_3H = sum_chunk(cmorph_prec_B2, 3)
+    cmorph_prec_B2_3H = cmorph_prec_B2_3H[:17527]
+    cmorph_time_list = cmorph_data[:, 3]
+
+    imerg_timeseries_WISKI = os.path.join(
+        settings.data_path, &#34;imerg_timeseries_WISKI.txt&#34;
+    )
+    imerg_data = np.loadtxt(imerg_timeseries_WISKI)
+    time2 = imerg_data[:, 0]
+    imerg_prec_B1 = imerg_data[:, 5]
+    imerg_prec_B1_3H = sum_chunk(
+        imerg_prec_B1, 6
+    )  # accumulated every 3 hours (6 times 30min)
+    imerg_prec_B1_3H = imerg_prec_B1_3H[:17527]
+    imerg_prec_B2 = imerg_data[:, 8]
+    imerg_prec_B2_3H = sum_chunk(imerg_prec_B2, 6)  # accumulated every 3 hours
+    imerg_prec_B2_3H = imerg_prec_B2_3H[:17527]
+    imerg_time = imerg_data[:, 3]
+
+    gsmap_timeseries_WISKI = os.path.join(
+        settings.data_path, &#34;gsmap_timeseries_WISKI.txt&#34;
+    )
+    gsmap_data = np.loadtxt(gsmap_timeseries_WISKI)
+    gsmap_prec_B1 = gsmap_data[:, 5]
+    gsmap_prec_B2 = gsmap_data[:, 8]
+    gsmap_year = gsmap_data[:, 0]
+    gsmap_month = gsmap_data[:, 1]
+    gsmap_day = gsmap_data[:, 2]
+    gsmap_hour = gsmap_data[:, 3]
+    gsmap_time_list = np.zeros(len(gsmap_year))
+    index = 0
+    for index in range(len(gsmap_year)):
+        gsmap_time_list[index] = time_convert(
+            int(gsmap_year[index]),
+            int(gsmap_month[index]),
+            int(gsmap_day[index]),
+            int(gsmap_hour[index]),
+            0,
+        )
+    gsmap_prec_B1_2016_2020 = gsmap_prec_B1[:35064]
+    gsmap_prec_B1_16_20_3H = sum_chunk(gsmap_prec_B1_2016_2020, 3)
+    gsmap_prec_B2_2016_2020 = gsmap_prec_B2[:35064]
+    gsmap_prec_B2_16_20_3H = sum_chunk(gsmap_prec_B2_2016_2020, 3)
+
+    mswep_timeseries_WISKI = os.path.join(
+        settings.data_path, &#34;mswep_timeseries_WISKI.txt&#34;
+    )
+    mswep_data = np.loadtxt(mswep_timeseries_WISKI)
+    mswep_prec_B1 = mswep_data[:, 5]
+    mswep_prec_B2 = mswep_data[:, 8]
+    mswep_prec_B1 = mswep_prec_B1[:17527]
+    mswep_prec_B2 = mswep_prec_B2[:17527]
+
+    mswep_prec_B1_3H_filter, Prec_station_3H_filter_m1 = filter_prec(
+        mswep_prec_B1, Prec_station_3H, 0.2
+    )
+    rmse_mswep1 = rmse(mswep_prec_B1_3H_filter, Prec_station_3H_filter_m1)
+    corr_mswep1 = np.corrcoef(mswep_prec_B1_3H_filter, Prec_station_3H_filter_m1)
+    std_mswep1 = stdev(mswep_prec_B1_3H_filter)
+    std_Bonsai = stdev(Prec_station_3H_filter_m1)
+
+    mswep_prec_B2_3H_filter, Prec_station_3H_filter_m2 = filter_prec(
+        mswep_prec_B2, Prec_station_3H, 0.2
+    )
+    rmse_mswep2 = rmse(mswep_prec_B2_3H_filter, Prec_station_3H_filter_m2)
+    corr_mswep2 = np.corrcoef(mswep_prec_B2_3H_filter, Prec_station_3H_filter_m2)
+    std_mswep2 = stdev(mswep_prec_B2_3H_filter)
+
+    print(&#34;Bonsai_std=&#34;, std_Bonsai)
+
+    print(&#34;MSWEP1: std, corr,rmse:&#34;, std_mswep1, corr_mswep1[0, 1], rmse_mswep1)
+    print(&#34;MSWEP2: std, corr,rmse:&#34;, std_mswep2, corr_mswep2[0, 1], rmse_mswep2)
+
+    cmorph_prec_B1_3H_filter, Prec_station_3H_filter_c1 = filter_prec(
+        cmorph_prec_B1_3H, Prec_station_3H, 0.2
+    )
+    rmse_cmorph1 = rmse(cmorph_prec_B1_3H_filter, Prec_station_3H_filter_c1)
+    corr_cmorph1 = np.corrcoef(cmorph_prec_B1_3H_filter, Prec_station_3H_filter_c1)
+    std_cmorph1 = stdev(cmorph_prec_B1_3H_filter)
+    cmorph_prec_B2_3H_filter, Prec_station_3H_filter_c2 = filter_prec(
+        cmorph_prec_B2_3H, Prec_station_3H, 0.2
+    )
+    rmse_cmorph2 = rmse(cmorph_prec_B2_3H_filter, Prec_station_3H_filter_c2)
+    corr_cmorph2 = np.corrcoef(cmorph_prec_B2_3H_filter, Prec_station_3H_filter_c2)
+    std_cmorph2 = stdev(cmorph_prec_B2_3H_filter)
+
+    print(&#34;cmorph1: std, corr,rmse:&#34;, std_cmorph1, corr_cmorph1[0, 1], rmse_cmorph1)
+    print(&#34;cmorph2: std, corr,rmse:&#34;, std_cmorph2, corr_cmorph2[0, 1], rmse_cmorph2)
+
+    imerg_prec_B1_3H_filter, Prec_station_3H_filter_i1 = filter_prec(
+        imerg_prec_B1_3H, Prec_station_3H, 0.2
+    )
+    rmse_imerg1 = rmse(imerg_prec_B1_3H_filter, Prec_station_3H_filter_i1)
+    corr_imerg1 = np.corrcoef(imerg_prec_B1_3H_filter, Prec_station_3H_filter_i1)
+    std_imerg1 = stdev(imerg_prec_B1_3H_filter)
+    imerg_prec_B2_3H_filter, Prec_station_3H_filter_i2 = filter_prec(
+        imerg_prec_B2_3H, Prec_station_3H, 0.2
+    )
+    rmse_imerg2 = rmse(imerg_prec_B2_3H_filter, Prec_station_3H_filter_i2)
+    corr_imerg2 = np.corrcoef(imerg_prec_B2_3H_filter, Prec_station_3H_filter_i2)
+    std_imerg2 = stdev(imerg_prec_B2_3H_filter)
+
+    print(&#34;imerg1: std, corr,rmse:&#34;, std_imerg1, corr_imerg1[0, 1], rmse_imerg1)
+    print(&#34;imerg2: std, corr,rmse:&#34;, std_imerg2, corr_imerg2[0, 1], rmse_imerg2)
+
+    gsmap_prec_B1_3H_filter, Prec_station_3H_filter_gsmap_g1 = filter_prec(
+        gsmap_prec_B1_16_20_3H, Prec_station_3H_16_20, 0.2
+    )
+    rmse_gsmap1 = rmse(gsmap_prec_B1_3H_filter, Prec_station_3H_filter_gsmap_g1)
+    corr_gsmap1 = np.corrcoef(gsmap_prec_B1_3H_filter, Prec_station_3H_filter_gsmap_g1)
+    std_gsmap1 = stdev(gsmap_prec_B1_3H_filter)
+    gsmap_prec_B2_3H_filter, Prec_station_3H_filter_gsmap_g2 = filter_prec(
+        gsmap_prec_B2_16_20_3H, Prec_station_3H_16_20, 0.2
+    )
+    rmse_gsmap2 = rmse(gsmap_prec_B2_3H_filter, Prec_station_3H_filter_gsmap_g2)
+    corr_gsmap2 = np.corrcoef(gsmap_prec_B2_3H_filter, Prec_station_3H_filter_gsmap_g2)
+    std_gsmap2 = stdev(gsmap_prec_B2_3H_filter)
+
+    print(&#34;gsmap1: std, corr,rmse:&#34;, std_gsmap1, corr_gsmap1[0, 1], rmse_gsmap1)
+    print(&#34;gsmap2: std, corr,rmse:&#34;, std_gsmap2, corr_gsmap2[0, 1], rmse_gsmap2)
+
+    filter = 0.2
+    Prec_station_3H_filter = [i for i in Prec_station_3H if i &gt;= filter]
+
+    fig = plt.figure(figsize=(10, 10))
+    ax = plt.gca()
+    qqplot(
+        Prec_station_3H_filter,
+        cmorph_prec_B1_3H_filter,
+        c=&#34;r&#34;,
+        alpha=0.5,
+        marker=&#34;o&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;CMORPH Grid1&#34;,
+        ms=29,
+    )
+    qqplot(
+        Prec_station_3H_filter,
+        imerg_prec_B1_3H_filter,
+        c=&#34;b&#34;,
+        alpha=0.5,
+        marker=&#34;o&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;IMERG Grid1&#34;,
+        ms=29,
+    )
+    qqplot(
+        Prec_station_3H_filter,
+        gsmap_prec_B1_3H_filter,
+        c=&#34;g&#34;,
+        marker=&#34;o&#34;,
+        alpha=0.5,
+        linestyle=&#34;None&#34;,
+        label=&#34;GSMaP Grid1&#34;,
+        ms=29,
+    )
+    qqplot(
+        Prec_station_3H_filter,
+        mswep_prec_B1_3H_filter,
+        c=&#34;m&#34;,
+        alpha=0.5,
+        marker=&#34;o&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;MSWEP Grid1&#34;,
+        ms=29,
+    )
+    plt.plot(imerg_prec_B1_3H_filter, imerg_prec_B1_3H_filter, c=&#34;k&#34;)
+    qqplot(
+        Prec_station_3H_filter,
+        cmorph_prec_B2_3H_filter,
+        c=&#34;r&#34;,
+        alpha=0.5,
+        marker=&#34;^&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;CMORPH Grid2&#34;,
+        ms=29,
+    )
+    qqplot(
+        Prec_station_3H_filter,
+        imerg_prec_B2_3H_filter,
+        c=&#34;b&#34;,
+        alpha=0.5,
+        marker=&#34;^&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;IMERG Grid2&#34;,
+        ms=29,
+    )
+    qqplot(
+        Prec_station_3H_filter,
+        gsmap_prec_B2_3H_filter,
+        c=&#34;g&#34;,
+        alpha=0.5,
+        marker=&#34;^&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;GSMaP Grid2&#34;,
+        ms=29,
+    )
+    qqplot(
+        Prec_station_3H_filter,
+        mswep_prec_B2_3H_filter,
+        c=&#34;m&#34;,
+        alpha=0.5,
+        marker=&#34;^&#34;,
+        linestyle=&#34;None&#34;,
+        label=&#34;MSWEP Grid2&#34;,
+        ms=29,
+    )
+    plt.xlabel(&#34;Station quantile prec. (mm/3h)&#34;, fontsize=40)
+    plt.ylabel(&#34;Satellite quantile prec. (mm/3h)&#34;, fontsize=40)
+    plt.suptitle(&#34;Fortress Bonsai&#34;, fontsize=40)
+    ax.tick_params(axis=&#34;x&#34;)
+    ax.tick_params(axis=&#34;y&#34;)
+    plt.xticks(fontsize=40)
+    plt.yticks(fontsize=40)
+    plt.legend(loc=&#34;lower right&#34;, frameon=False, prop={&#34;size&#34;: 20})
+    plt.tight_layout()
+    fig.tight_layout(rect=[0, 0.03, 1, 0.95])
+    fig.savefig(
+        os.path.join(
+            settings.output_path,
+            &#34;QQplot_Bonsai_satellites_grid1_grid2_3H_filterlog.pdf&#34;,
+        )
+    )
+    fig.savefig(
+        os.path.join(
+            settings.output_path,
+            &#34;QQplot_Bonsai_satellites_grid1_grid2_3H_filterlog.png&#34;,
+        )
+    )</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="wrf_postprocessing_codes" href="index.html">wrf_postprocessing_codes</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="wrf_postprocessing_codes.main.main" href="#wrf_postprocessing_codes.main.main">main</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

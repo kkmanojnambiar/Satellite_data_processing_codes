@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>wrf_postprocessing_codes.src.utils API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>wrf_postprocessing_codes.src.utils</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import datetime
+import math
+
+import numpy as np
+
+
+def rmse(x, x_obs):
+    return np.sqrt(np.mean(np.square(x - x_obs)))
+
+
+def variance(data, ddof=0):
+    n = len(data)
+    mean = sum(data) / n
+    return sum((x - mean) ** 2 for x in data) / (n - ddof)
+
+
+def stdev(data):
+    var = variance(data)
+    std_dev = math.sqrt(var)
+    return std_dev
+
+
+def sum_chunk(x: np.array, chunk_size: int, axis: int = -1) -&gt; np.array:
+    &#34;&#34;&#34;Reshaping the 2D array into a 3D array, then collapse the extra dimension with np.sum. Generalizing it to n-dimensional arrays, could do something like this:
+
+    Args:
+        x (np.array): precipitation data
+        chunk_size (int): Number of columns to be added
+        axis (int, optional): dimension of the data. Defaults to -1.
+
+    Returns:
+        np.array: Precipitation data array after taking the sum of every 3 points
+    &#34;&#34;&#34;
+    shape = x.shape
+    if axis &lt; 0:
+        axis += x.ndim
+    shape = shape[:axis] + (-1, chunk_size) + shape[axis + 1 :]
+    x = x.reshape(shape)
+    return x.sum(axis=axis + 1)
+
+
+def time_convert(year, month, day, hour, minute):
+    t = datetime.datetime(year, month, day, hour, minute)
+    return (t - datetime.datetime(1970, 1, 1)).total_seconds()
+
+
+# Function to filter out values greater than 0.2
+def filter_prec(sat_data, obs_data, prec_cutoff_val):
+    sat_data_filter = []
+    obs_data_filter = []
+    for a, b in zip(sat_data, obs_data):
+        if a &gt;= prec_cutoff_val and b &gt;= prec_cutoff_val:
+            sat_data_filter.append(a)
+            obs_data_filter.append(b)
+
+    sat_data_filter = np.asarray(sat_data_filter, dtype=np.float32)
+    obs_data_filter = np.asarray(obs_data_filter, dtype=np.float32)
+    return sat_data_filter, obs_data_filter</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="wrf_postprocessing_codes.src.utils.filter_prec"><code class="name flex">
+<span>def <span class="ident">filter_prec</span></span>(<span>sat_data, obs_data, prec_cutoff_val)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def filter_prec(sat_data, obs_data, prec_cutoff_val):
+    sat_data_filter = []
+    obs_data_filter = []
+    for a, b in zip(sat_data, obs_data):
+        if a &gt;= prec_cutoff_val and b &gt;= prec_cutoff_val:
+            sat_data_filter.append(a)
+            obs_data_filter.append(b)
+
+    sat_data_filter = np.asarray(sat_data_filter, dtype=np.float32)
+    obs_data_filter = np.asarray(obs_data_filter, dtype=np.float32)
+    return sat_data_filter, obs_data_filter</code></pre>
+</details>
+</dd>
+<dt id="wrf_postprocessing_codes.src.utils.rmse"><code class="name flex">
+<span>def <span class="ident">rmse</span></span>(<span>x, x_obs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rmse(x, x_obs):
+    return np.sqrt(np.mean(np.square(x - x_obs)))</code></pre>
+</details>
+</dd>
+<dt id="wrf_postprocessing_codes.src.utils.stdev"><code class="name flex">
+<span>def <span class="ident">stdev</span></span>(<span>data)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def stdev(data):
+    var = variance(data)
+    std_dev = math.sqrt(var)
+    return std_dev</code></pre>
+</details>
+</dd>
+<dt id="wrf_postprocessing_codes.src.utils.sum_chunk"><code class="name flex">
+<span>def <span class="ident">sum_chunk</span></span>(<span>x: <built-in function array>, chunk_size: int, axis: int = -1) -> <built-in function array></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reshaping the 2D array into a 3D array, then collapse the extra dimension with np.sum. Generalizing it to n-dimensional arrays, could do something like this:</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>x</code></strong> :&ensp;<code>np.array</code></dt>
+<dd>precipitation data</dd>
+<dt><strong><code>chunk_size</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of columns to be added</dd>
+<dt><strong><code>axis</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>dimension of the data. Defaults to -1.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>np.array</code></dt>
+<dd>Precipitation data array after taking the sum of every 3 points</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sum_chunk(x: np.array, chunk_size: int, axis: int = -1) -&gt; np.array:
+    &#34;&#34;&#34;Reshaping the 2D array into a 3D array, then collapse the extra dimension with np.sum. Generalizing it to n-dimensional arrays, could do something like this:
+
+    Args:
+        x (np.array): precipitation data
+        chunk_size (int): Number of columns to be added
+        axis (int, optional): dimension of the data. Defaults to -1.
+
+    Returns:
+        np.array: Precipitation data array after taking the sum of every 3 points
+    &#34;&#34;&#34;
+    shape = x.shape
+    if axis &lt; 0:
+        axis += x.ndim
+    shape = shape[:axis] + (-1, chunk_size) + shape[axis + 1 :]
+    x = x.reshape(shape)
+    return x.sum(axis=axis + 1)</code></pre>
+</details>
+</dd>
+<dt id="wrf_postprocessing_codes.src.utils.time_convert"><code class="name flex">
+<span>def <span class="ident">time_convert</span></span>(<span>year, month, day, hour, minute)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def time_convert(year, month, day, hour, minute):
+    t = datetime.datetime(year, month, day, hour, minute)
+    return (t - datetime.datetime(1970, 1, 1)).total_seconds()</code></pre>
+</details>
+</dd>
+<dt id="wrf_postprocessing_codes.src.utils.variance"><code class="name flex">
+<span>def <span class="ident">variance</span></span>(<span>data, ddof=0)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def variance(data, ddof=0):
+    n = len(data)
+    mean = sum(data) / n
+    return sum((x - mean) ** 2 for x in data) / (n - ddof)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="wrf_postprocessing_codes.src" href="index.html">wrf_postprocessing_codes.src</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="wrf_postprocessing_codes.src.utils.filter_prec" href="#wrf_postprocessing_codes.src.utils.filter_prec">filter_prec</a></code></li>
+<li><code><a title="wrf_postprocessing_codes.src.utils.rmse" href="#wrf_postprocessing_codes.src.utils.rmse">rmse</a></code></li>
+<li><code><a title="wrf_postprocessing_codes.src.utils.stdev" href="#wrf_postprocessing_codes.src.utils.stdev">stdev</a></code></li>
+<li><code><a title="wrf_postprocessing_codes.src.utils.sum_chunk" href="#wrf_postprocessing_codes.src.utils.sum_chunk">sum_chunk</a></code></li>
+<li><code><a title="wrf_postprocessing_codes.src.utils.time_convert" href="#wrf_postprocessing_codes.src.utils.time_convert">time_convert</a></code></li>
+<li><code><a title="wrf_postprocessing_codes.src.utils.variance" href="#wrf_postprocessing_codes.src.utils.variance">variance</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
