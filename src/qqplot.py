@@ -1,18 +1,25 @@
-
-
-from matplotlib import pyplot as plt
 import numpy as np
+from matplotlib import pyplot as plt
 
 
-def qqplot(x, y, quantiles=None, interpolation='nearest', ax=None, rug=False,
-           rug_length=0.05, rug_kwargs=None, **kwargs):
+def qqplot(
+    x,
+    y,
+    quantiles=None,
+    interpolation="nearest",
+    ax=None,
+    rug=False,
+    rug_length=0.05,
+    rug_kwargs=None,
+    **kwargs
+):
 
     # Get current axes if none are provided
     if ax is None:
         ax = plt.gca()
 
     if quantiles is None:
-        #quantiles = min(len(x), len(y))
+        # quantiles = min(len(x), len(y))
         quantiles = 10
 
     # Compute quantiles of the two samples
@@ -22,16 +29,11 @@ def qqplot(x, y, quantiles=None, interpolation='nearest', ax=None, rug=False,
     x_quantiles = np.quantile(x, quantiles_num, interpolation=interpolation)
     y_quantiles = np.quantile(y, quantiles_num, interpolation=interpolation)
 
-    x_quantiles_ni = np.quantile(x, quantiles_num)
-    y_quantiles_ni = np.quantile(y, quantiles_num)
-
-
-
     # Draw the rug plots if requested
     if rug:
         # Default rug plot settings
-        rug_x_params = dict(ymin=0, ymax=rug_length, c='gray', alpha=0.5)
-        rug_y_params = dict(xmin=0, xmax=rug_length, c='gray', alpha=0.5)
+        rug_x_params = dict(ymin=0, ymax=rug_length, c="gray", alpha=0.5)
+        rug_y_params = dict(xmin=0, xmax=rug_length, c="gray", alpha=0.5)
 
         # Override default setting by any user-specified settings
         if rug_kwargs is not None:
@@ -45,6 +47,5 @@ def qqplot(x, y, quantiles=None, interpolation='nearest', ax=None, rug=False,
             ax.axhline(point, **rug_y_params)
 
     # Draw the q-q plot
-    
-    ax.loglog(x_quantiles, y_quantiles, basex=10,basey=10, **kwargs)
-   
+
+    ax.loglog(x_quantiles, y_quantiles, basex=10, basey=10, **kwargs)
