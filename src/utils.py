@@ -5,16 +5,22 @@ import numpy as np
 
 
 def rmse(x, x_obs):
+    """Compute the root mean squared error of two data sets. 
+    """
     return np.sqrt(np.mean(np.square(x - x_obs)))
 
 
 def variance(data, ddof=0):
+    """Compute the variance. 
+    """
     n = len(data)
     mean = sum(data) / n
     return sum((x - mean) ** 2 for x in data) / (n - ddof)
 
 
 def stdev(data):
+    """Compute the standard deviation. 
+    """
     var = variance(data)
     std_dev = math.sqrt(var)
     return std_dev
@@ -40,12 +46,16 @@ def sum_chunk(x: np.array, chunk_size: int, axis: int = -1) -> np.array:
 
 
 def time_convert(year, month, day, hour, minute):
+    """Compute the time in seconds since 01-01-1970. 
+    """
     t = datetime.datetime(year, month, day, hour, minute)
     return (t - datetime.datetime(1970, 1, 1)).total_seconds()
 
 
 # Function to filter out values greater than 0.2
 def filter_prec(sat_data, obs_data, prec_cutoff_val):
+    """generate new time series for sateliite data and observation data  when both the satellite data and observation data  has precipitation value greater than the prec_cutoof_val at the same time.
+    """
     sat_data_filter = []
     obs_data_filter = []
     for a, b in zip(sat_data, obs_data):
