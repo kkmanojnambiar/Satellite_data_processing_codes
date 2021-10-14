@@ -4,28 +4,6 @@ import math
 import numpy as np
 
 
-def rmse(x, x_obs):
-    """Compute the root mean squared error of two data sets. 
-    """
-    return np.sqrt(np.mean(np.square(x - x_obs)))
-
-
-def variance(data, ddof=0):
-    """Compute the variance. 
-    """
-    n = len(data)
-    mean = sum(data) / n
-    return sum((x - mean) ** 2 for x in data) / (n - ddof)
-
-
-def stdev(data):
-    """Compute the standard deviation. 
-    """
-    var = variance(data)
-    std_dev = math.sqrt(var)
-    return std_dev
-
-
 def sum_chunk(x: np.array, chunk_size: int, axis: int = -1) -> np.array:
     """Reshaping the 2D array into a 3D array, then collapse the extra dimension with np.sum. Generalizing it to n-dimensional arrays, could do something like this:
 
@@ -66,3 +44,24 @@ def filter_prec(sat_data, obs_data, prec_cutoff_val):
     sat_data_filter = np.asarray(sat_data_filter, dtype=np.float32)
     obs_data_filter = np.asarray(obs_data_filter, dtype=np.float32)
     return sat_data_filter, obs_data_filter
+
+def rmse(x, x_obs):
+    """Compute the root mean squared error of two data sets. 
+    """
+    return np.sqrt(np.mean(np.square(x - x_obs)))
+
+
+def variance(data, ddof=0):
+    """Compute the variance. 
+    """
+    n = len(data)
+    mean = sum(data) / n
+    return sum((x - mean) ** 2 for x in data) / (n - ddof)
+
+
+def stdev(data):
+    """Compute the standard deviation. 
+    """
+    var = variance(data)
+    std_dev = math.sqrt(var)
+    return std_dev

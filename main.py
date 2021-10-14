@@ -13,6 +13,7 @@ from src.utils import filter_prec, rmse, stdev, sum_chunk, time_convert
 def main():
     met_stn_data_path = os.path.join(
         settings.data_path, "AB_RMF_bonsai_meteorological.txt"
+        #Observation data from met station
     )
 
     df = pd.read_csv(
@@ -30,13 +31,15 @@ def main():
 
     Prec_station_3H = Prec2[:210324].values.reshape(-1, 12).sum(1)
     Prec_station_3H_16_20 = Prec_station_3H[5839:]  # precipitation from 2016 jan 01
-
+    #Load satellite based precipitation data from CMORPH, IMERG, GSMaP and MSWEP
     cmorph_timeseries_WISKI = os.path.join(
         settings.data_path, "cmorph_timeseries_WISKI.txt"
     )
     cmorph_data = np.loadtxt(cmorph_timeseries_WISKI)
     cmorph_prec_B1 = cmorph_data[:, 5]
+    #Extension B1 and B2 represents two nearest data points to the ground based observation location 
     cmorph_prec_B1_3H = sum_chunk(cmorph_prec_B1, 3)
+    # accumulated every 3 hours (add 3 hourly (1 hour) data)
     cmorph_prec_B1_3H = cmorph_prec_B1_3H[:17527]
     cmorph_prec_B2 = cmorph_data[:, 8]
     cmorph_prec_B2_3H = sum_chunk(cmorph_prec_B2, 3)
@@ -108,8 +111,10 @@ def main():
     std_mswep2 = stdev(mswep_prec_B2_3H_filter)
 
     print("Bonsai_std=", std_Bonsai)
+    #standadrd deviation of the met station data at Bonsai
 
     print("MSWEP1: std, corr,rmse:", std_mswep1, corr_mswep1[0, 1], rmse_mswep1)
+    #standadrd deviation of the satellite (mswep) data point 1, correlation coefficient and rmse of mswep against met station data 
     print("MSWEP2: std, corr,rmse:", std_mswep2, corr_mswep2[0, 1], rmse_mswep2)
 
     cmorph_prec_B1_3H_filter, Prec_station_3H_filter_c1 = filter_prec(

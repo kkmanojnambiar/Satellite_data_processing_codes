@@ -1,6 +1,8 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
+# A Q-Q plot is a scatterplot created by plotting two sets of quantiles against one another. If both sets of quantiles came from the same distribution, we should see the points forming a line that’s roughly straight. 
+    
 
 def qqplot(
     x,
@@ -13,6 +15,7 @@ def qqplot(
     rug_kwargs=None,
     **kwargs
 ):
+    
 
     # Get current axes if none are provided
     if ax is None:
